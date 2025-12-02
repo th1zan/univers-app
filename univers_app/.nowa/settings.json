@@ -1,0 +1,19 @@
+{
+    "version": "3.3.0",
+    "app": {
+        "name": "univers_app",
+        "package_name": "com.example.universapp"
+    },
+    "main": [
+        {
+            "key": "supabase",
+            "statement": "await SupabaseService().initialize();",
+            "imports": [
+                "package:univers_app/integrations/supabase_service.dart"
+            ]
+        }
+    ],
+    "experimental": {
+        "load_packages": true
+    }
+}

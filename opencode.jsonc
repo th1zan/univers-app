@@ -1,0 +1,27 @@
+{
+  // Schéma officiel pour validation
+  "$schema": "https://opencode.ai/config.json",
+  
+  // Section MCP : Configure les serveurs MCP
+  "mcp": {
+    // Serveur remote Context7 pour doc Dart/Flutter
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "ctx7sk-776fe408-b230-4968-b62b-489bcf45d7d8"  // Référence à ta var d'env
+      },
+      "enabled": true,  // Active par défaut
+      "timeout": 10000  // Augmenté pour docs lourdes (défaut 5000ms)
+    }
+  },
+  
+  // Section agent : Intègre avec GrokCode
+  "agent": {
+    "grokcode": {  // Nom de l'agent pour GrokCode
+      "tools": {
+        "context7": true  // Active Context7 pour cet agent
+      }
+    }
+  }
+}
