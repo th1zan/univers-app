@@ -12,7 +12,6 @@
         "CONTEXT7_API_KEY": "ctx7sk-776fe408-b230-4968-b62b-489bcf45d7d8"  // Référence à ta var d'env
       },
       "enabled": true,  // Active par défaut
-      "timeout": 10000  // Augmenté pour docs lourdes (défaut 5000ms)
     }
   },
   
@@ -22,6 +21,12 @@
       "tools": {
         "context7": true  // Active Context7 pour cet agent
       }
+    },
+    "flutter_edu": {
+      "tools": {
+        "context7": true
+      },
+      "read_only": true
     }
   }
 }

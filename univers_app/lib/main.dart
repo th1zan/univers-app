@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:univers_app/globals/app_state.dart';
 import 'package:univers_app/pages/landing_page.dart';
-import 'package:univers_app/pages/slides_show.dart';
 
 @NowaGenerated()
 late final SharedPreferences sharedPrefs;
@@ -29,10 +28,7 @@ class MyApp extends StatelessWidget {
       create: (context) => AppState(),
       builder: (context, child) => MaterialApp(
         theme: AppState.of(context).theme,
-        routes: {
-          'LandingPage': (context) => const LandingPage(),
-          'SlidesShow': (context) => const SlidesShow(),
-        },
+        routes: {'LandingPage': (context) => const LandingPage()},
         initialRoute: 'LandingPage',
       ),
     );

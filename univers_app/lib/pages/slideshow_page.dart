@@ -1,9 +1,17 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
+import 'package:chewie/chewie.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:nowa_runtime/nowa_runtime.dart';
-import 'package:univers_app/models/univers_asset_model.dart';
 import 'package:univers_app/integrations/supabase_service.dart';
+import 'package:univers_app/models/univers_asset_model.dart';
+import 'package:flutter/foundation.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:univers_app/models/univers_model.dart';
+import 'package:univers_app/widgets/hold_button.dart';
+import 'package:univers_app/globals/app_state.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 @NowaGenerated()
 class SlideshowPage extends StatefulWidget {
@@ -28,28 +36,70 @@ class _SlideshowPageState extends State<SlideshowPage> {
 
   late PageController pageController;
 
-  NowaVideoPlayerController? videoController;
+  VideoPlayerController? videoPlayerController;
+
+  ChewieController? chewieController;
+
+  AudioPlayer? audioPlayer;
+
+  FlutterTts? _tts;
+
+  late String universId;
+
+  late String slug;
+
+  // Voix préférées par langue pour un son plus naturel
+  final Map<String, String> preferredVoices = {
+    'fr': 'Amélie',
+    'en': 'Samantha',
+    'es': 'Paulina',
+    'de': 'Anna',
+    'it': 'Alice',
+    // Ajoute d'autres langues si besoin
+  };
 
   @override
   void initState() {
     super.initState();
     pageController = PageController();
+    universId = widget.univers.id ?? '';
+    slug = widget.univers.slug ?? '';
+
+    _initTts();
+
+    audioPlayer = AudioPlayer();
+    final musicUrl =
+        'https://nazvebulhqxnieyeqnxe.supabase.co/storage/v1/object/public/univers/$slug/music.mp3';
+    audioPlayer?.play(UrlSource(musicUrl));
+    SupabaseService().preloadUniversAssets(slug);
+  }
+
+  Future<void> _initTts() async {
+    _tts = FlutterTts();
+    await _tts?.setLanguage('fr'); // Langue par défaut, à adapter avec appState
+    await _tts?.setSpeechRate(0.4); // Plus lent pour un son plus naturel
+    await _tts?.setPitch(1.0); // Hauteur normale
+    await _tts?.setVolume(1.0); // Volume max
   }
 
   @override
   void dispose() {
     pageController.dispose();
-    videoController?.dispose();
+    videoPlayerController?.dispose();
+    chewieController?.dispose();
+    audioPlayer?.dispose();
+    _tts?.stop();
     super.dispose();
   }
-
-
 
   void stopVideo() {
     setState(() {
       isPlayingVideo = false;
-      videoController?.dispose();
-      videoController = null;
+      videoPlayerController?.pause();
+      videoPlayerController?.dispose();
+      chewieController?.dispose();
+      videoPlayerController = null;
+      chewieController = null;
     });
   }
 
@@ -59,9 +109,7 @@ class _SlideshowPageState extends State<SlideshowPage> {
       backgroundColor: const Color(0xfff5e6d3),
       body: SafeArea(
         child: DataBuilder<List<UniversAssetModel>>(
-           future: SupabaseService().getUniversAssets(
-             widget.univers.folder ?? '',
-           ),
+          future: SupabaseService().getUniversAssets(universId),
           loadingWidget: const Center(
             child: CircularProgressIndicator(
               strokeWidth: 5.0,
@@ -100,173 +148,183 @@ class _SlideshowPageState extends State<SlideshowPage> {
                   Column(
                     children: [
                       Expanded(
-                        child: PageView.builder(
-                          controller: pageController,
-                          onPageChanged: (index) {
-                            setState(() {
-                              currentIndex = index;
-                            });
-                          },
-                          itemCount: assets.length,
-                          itemBuilder: (context, index) {
-                            final asset = assets[index];
-                             return GestureDetector(
+                        child: IgnorePointer(
+                          ignoring: isPlayingVideo,
+                          child: PageView.builder(
+                            controller: pageController,
+                             onPageChanged: (index) {
+                               setState(() {
+                                 currentIndex = index;
+                               });
+                               _speakCurrentTitle(assets);
+                             },
+                            itemCount: assets.length,
+                            itemBuilder: (context, index) {
+                              final asset = assets[index];
+                              final encodedFolder = Uri.encodeComponent(slug);
+                              final encodedImage = Uri.encodeComponent(
+                                asset.imageUrl ?? '',
+                              );
+                              final imageUrl =
+                                  'https://nazvebulhqxnieyeqnxe.supabase.co/storage/v1/object/public/univers/$encodedFolder/$encodedImage';
+
+                              return GestureDetector(
                                 onTap: () {
-                                  String videoUrl = asset.animationUrl ?? "https://nazvebulhqxnieyeqnxe.supabase.co/storage/v1/object/public/univers/${widget.univers.folder}/${asset.imageUrl?.replaceAll('.png', '.mp4')}";
+                                  final videoExtension = kIsWeb
+                                      ? '_silent.webm'
+                                      : '_silent.mp4';
+                                  final videoName =
+                                      asset.imageUrl?.replaceAll(
+                                        '.png',
+                                        videoExtension,
+                                      ) ??
+                                      '';
+                                  final encodedVideo = Uri.encodeComponent(
+                                    videoName,
+                                  );
+                                  String videoUrl =
+                                      asset.animationUrl ??
+                                      'https://nazvebulhqxnieyeqnxe.supabase.co/storage/v1/object/public/univers/${Uri.encodeComponent(slug)}/${encodedVideo}';
+
                                   playVideo(videoUrl);
                                 },
-                               child: Center(
-                                  child: Image.network(
-                                    "https://nazvebulhqxnieyeqnxe.supabase.co/storage/v1/object/public/univers/${widget.univers.folder}/${asset.imageUrl}",
-                                    fit: BoxFit.contain,
-                                   errorBuilder: (context, error, stackTrace) =>
-                                       const Icon(
-                                     Icons.broken_image,
-                                     size: 100.0,
-                                     color: Colors.grey,
-                                   ),
-                                 ),
-                               ),
-                             );
-                          },
+                                child: Center(
+                                  child: CachedNetworkImage(
+                                    imageUrl: imageUrl,
+                                    fit: kIsWeb ? BoxFit.contain : BoxFit.cover,
+                                    placeholder: (context, url) => const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(
+                                          Icons.broken_image,
+                                          size: 100.0,
+                                          color: Colors.grey,
+                                        ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 24.0,
-                          horizontal: 20.0,
-                        ),
-                         child: Text(
-                           assets[currentIndex].title ?? '',
-                           style: const TextStyle(
-                             fontSize: 36.0,
-                             fontWeight: FontWeight.bold,
-                             color: Colors.black87,
-                           ),
-                           textAlign: TextAlign.center,
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 24.0,
+                            horizontal: 20.0,
                          ),
-                      ),
+                          child: Text(
+                            assets[currentIndex].translations?[Provider.of<AppState>(context).selectedLanguage] ?? assets[currentIndex].title ?? '',
+                            style: const TextStyle(
+                              fontSize: 36.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                     ],
                   ),
-                if (isPlayingVideo && videoController != null)
-                  GestureDetector(
-                    onTap: stopVideo,
-                    child: Container(
-                      color: Colors.black,
-                      child: Center(
-                        child: NowaVideoPlayer(controller: videoController!),
+                if (isPlayingVideo && chewieController != null)
+                  LayoutBuilder(
+                    builder: (context, constraints) => GestureDetector(
+                      onTap: stopVideo,
+                      child: Container(
+                        width: constraints.maxWidth,
+                        height: constraints.maxHeight,
+                        color: Colors.black,
+                        child: Center(
+                          child: Chewie(controller: chewieController!),
+                        ),
                       ),
                     ),
                   ),
                 Positioned(
                   top: 20.0,
                   left: 20.0,
-                  child: Material(
-                    color: Colors.white.withValues(alpha: 0.95),
-                    shape: const CircleBorder(),
-                    elevation: 4.0,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      customBorder: const CircleBorder(),
-                      child: const Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Icon(
-                          Icons.arrow_back,
-                          size: 36.0,
-                          color: Colors.black87,
-                        ),
-                      ),
-                    ),
+                  child: HoldButton(
+                    iconBuilder: () => Icons.arrow_back_rounded,
+                    onHold: () {
+                      Navigator.pop(context);
+                    },
+                    gradientColors: const [
+                      Color(0xFFFF6B9D),
+                      Color(0xFFFF8CAB),
+                    ],
+                    size: 70.0,
+                    iconSize: 40.0,
+                    holdDuration: const Duration(seconds: 2),
                   ),
                 ),
-                 Positioned(
-                   top: 20.0,
-                   right: 20.0,
-                   child: Material(
-                     color: Colors.white.withValues(alpha: 0.95),
-                     shape: const CircleBorder(),
-                     elevation: 4.0,
-                     child: InkWell(
-                       onTap: () {
-                         setState(() {
-                           isMuted = !isMuted;
-                           if (videoController != null) {
-                             videoController?.setVolume(isMuted ? 0.0 : 1.0);
-                           }
-                         });
-                       },
-                       customBorder: const CircleBorder(),
-                       child: Padding(
-                         padding: const EdgeInsets.all(16.0),
-                         child: Icon(
-                           isMuted ? Icons.volume_off : Icons.volume_up,
-                           size: 36.0,
-                           color: Colors.black87,
-                         ),
-                       ),
-                     ),
-                   ),
-                 ),
-                 if (kIsWeb)
-                   Positioned(
-                     left: 20.0,
-                     top: MediaQuery.of(context).size.height / 2 - 40,
-                     child: Material(
-                       color: Colors.white.withValues(alpha: 0.8),
-                       shape: const CircleBorder(),
-                       elevation: 4.0,
-                       child: InkWell(
-                         onTap: () {
-                           if (currentIndex > 0) {
-                             pageController.previousPage(
-                               duration: const Duration(milliseconds: 300),
-                               curve: Curves.easeInOut,
-                             );
-                           }
-                         },
-                         customBorder: const CircleBorder(),
-                         child: const Padding(
-                           padding: EdgeInsets.all(16.0),
-                           child: Icon(
-                             Icons.arrow_back_ios,
-                             size: 36.0,
-                             color: Colors.black87,
-                           ),
-                         ),
-                       ),
-                     ),
-                   ),
-                 if (kIsWeb)
-                   Positioned(
-                     right: 20.0,
-                     top: MediaQuery.of(context).size.height / 2 - 40,
-                     child: Material(
-                       color: Colors.white.withValues(alpha: 0.8),
-                       shape: const CircleBorder(),
-                       elevation: 4.0,
-                       child: InkWell(
-                         onTap: () {
-                           if (currentIndex < assets.length - 1) {
-                             pageController.nextPage(
-                               duration: const Duration(milliseconds: 300),
-                               curve: Curves.easeInOut,
-                             );
-                           }
-                         },
-                         customBorder: const CircleBorder(),
-                         child: const Padding(
-                           padding: EdgeInsets.all(16.0),
-                           child: Icon(
-                             Icons.arrow_forward_ios,
-                             size: 36.0,
-                             color: Colors.black87,
-                           ),
-                         ),
-                       ),
-                     ),
-                   ),
+                Positioned(
+                  top: 20.0,
+                  right: 20.0,
+                  child: HoldButton(
+                    iconBuilder: () => isMuted ? Icons.volume_off_rounded : Icons.volume_up_rounded,
+                    onHold: () {
+                      setState(() {
+                        isMuted = !isMuted;
+                        if (chewieController != null) {
+                          chewieController?.setVolume(isMuted ? 0.0 : 1.0);
+                        }
+                        audioPlayer?.setVolume(isMuted ? 0.0 : 1.0);
+                      });
+                    },
+                    gradientColors: const [
+                      Color(0xFF4ECDC4),
+                      Color(0xFF6FE3DA),
+                    ],
+                    size: 70.0,
+                    iconSize: 40.0,
+                    holdDuration: const Duration(seconds: 2),
+                  ),
+                ),
+                if (kIsWeb)
+                  Positioned(
+                    left: 20.0,
+                    top: MediaQuery.of(context).size.height / 2 - 35,
+                    child: HoldButton(
+                      iconBuilder: () => Icons.arrow_back_ios_new_rounded,
+                      onHold: () {
+                        if (currentIndex > 0) {
+                          pageController.previousPage(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        }
+                      },
+                      gradientColors: const [
+                        Colors.white,
+                        Color(0xFFF5F5F5),
+                      ],
+                      size: 70.0,
+                      iconSize: 40.0,
+                      holdDuration: const Duration(seconds: 1),
+                    ),
+                  ),
+                if (kIsWeb)
+                  Positioned(
+                    right: 20.0,
+                    top: MediaQuery.of(context).size.height / 2 - 35,
+                    child: HoldButton(
+                      iconBuilder: () => Icons.arrow_forward_ios_rounded,
+                      onHold: () {
+                        if (currentIndex < assets.length - 1) {
+                          pageController.nextPage(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        }
+                      },
+                      gradientColors: const [
+                        Colors.white,
+                        Color(0xFFF5F5F5),
+                      ],
+                      size: 70.0,
+                      iconSize: 40.0,
+                      holdDuration: const Duration(seconds: 1),
+                    ),
+                  ),
               ],
             );
           },
@@ -275,22 +333,42 @@ class _SlideshowPageState extends State<SlideshowPage> {
     );
   }
 
-  void playVideo(String animationUrl) {
-    print('Playing video: $animationUrl');
-    setState(() {
-      isPlayingVideo = true;
-      videoController = NowaVideoPlayerController(
-        url: animationUrl,
-        type: FileSourceType.network,
-        autoPlay: true,
-        showControlsBar: false,
-        allowFullScreenButton: false,
-      );
-    });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (videoController != null && isMuted) {
-        videoController?.setVolume(0.0);
+  void _speakCurrentTitle(List<UniversAssetModel> assets) {
+    final appState = Provider.of<AppState>(context, listen: false);
+    final title = assets[currentIndex].translations?[appState.selectedLanguage] ?? assets[currentIndex].title ?? '';
+    if (title.isNotEmpty) {
+      _tts?.setLanguage(appState.selectedLanguage);
+      // Essayer de définir une voix plus naturelle pour la langue
+      final voiceName = preferredVoices[appState.selectedLanguage];
+      if (voiceName != null) {
+        _tts?.setVoice({'name': voiceName, 'locale': appState.selectedLanguage});
       }
-    });
+      _tts?.speak(title);
+    }
+  }
+
+  Future<void> playVideo(String videoUrl) async {
+    try {
+      videoPlayerController = VideoPlayerController.networkUrl(Uri.parse(videoUrl));
+      await videoPlayerController?.initialize();
+      chewieController = ChewieController(
+        videoPlayerController: videoPlayerController!,
+        autoPlay: true,
+        looping: true,
+        showControls: false,
+        allowFullScreen: false,
+        allowMuting: true,
+      );
+      setState(() {
+        isPlayingVideo = true;
+      });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (chewieController != null && isMuted) {
+          chewieController?.setVolume(0.0);
+        }
+      });
+    } catch (e) {
+      // Ignore video initialization errors
+    }
   }
 }

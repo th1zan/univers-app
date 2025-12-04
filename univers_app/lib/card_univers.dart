@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:nowa_runtime/nowa_runtime.dart';
 import 'package:univers_app/pages/slideshow_page.dart';
 import 'package:univers_app/models/univers_model.dart';
+import 'package:univers_app/globals/app_state.dart';
+import 'package:provider/provider.dart';
 
 @NowaGenerated()
 class CardUnivers extends StatefulWidget {
@@ -17,11 +19,34 @@ class CardUnivers extends StatefulWidget {
 }
 
 @NowaGenerated()
-class _CardUniversState extends State<CardUnivers> {
+class _CardUniversState extends State<CardUnivers> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 150),
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTapDown: (_) => _controller.forward(),
+      onTapUp: (_) {
+        _controller.reverse();
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -29,66 +54,124 @@ class _CardUniversState extends State<CardUnivers> {
           ),
         );
       },
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
-              blurRadius: 10.0,
-              offset: const Offset(0.0, 4.0),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(24.0),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.network(
-                widget.univers.coverImageUrl ??
-                    'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=400',
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  color: Colors.grey[300],
-                  child: const Icon(
-                    Icons.image_not_supported,
-                    size: 60.0,
-                    color: Colors.grey,
-                  ),
-                ),
+      onTapCancel: () => _controller.reverse(),
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.0),
+            boxShadow: [
+              BoxShadow(
+                 color: const Color(0xFFFF6B9D).withValues(alpha: 0.25),
+                blurRadius: 20.0,
+                offset: const Offset(0, 10),
+                spreadRadius: 2.0,
               ),
-              Positioned(
-                bottom: 0.0,
-                left: 0.0,
-                right: 0.0,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 16.0,
-                    horizontal: 12.0,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                      colors: [
-                        Colors.black.withValues(alpha: 0.7),
-                        Colors.transparent,
-                      ],
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(30.0),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                // Image avec overlay gradient
+                Image.network(
+                  widget.univers.coverImageUrl ??
+                      'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=400',
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                           const Color(0xFFFF6B9D).withValues(alpha: 0.3),
+                           const Color(0xFF4ECDC4).withValues(alpha: 0.3),
+                        ],
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    widget.univers.name ?? 'Untitled',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
+                    child: const Icon(
+                      Icons.star_rounded,
+                      size: 80.0,
                       color: Colors.white,
                     ),
                   ),
                 ),
-              ),
-            ],
+
+                // Badge décoratif (coin haut droit)
+                Positioned(
+                  top: 12.0,
+                  right: 12.0,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 6.0,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFD93D),
+                      borderRadius: BorderRadius.circular(20.0),
+                      boxShadow: [
+                        BoxShadow(
+                           color: Colors.black.withValues(alpha: 0.2),
+                          blurRadius: 8.0,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.play_circle_filled,
+                      color: Colors.white,
+                      size: 20.0,
+                    ),
+                  ),
+                ),
+
+                // Titre avec fond gradient
+                Positioned(
+                  bottom: 0.0,
+                  left: 0.0,
+                  right: 0.0,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 20.0,
+                      horizontal: 16.0,
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                           Colors.black.withValues(alpha: 0.85),
+                           Colors.black.withValues(alpha: 0.5),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                    child: Consumer<AppState>(
+                      builder: (context, appState, child) => Text(
+                        widget.univers.translations?[appState.selectedLanguage] ?? widget.univers.name ?? 'Sans titre',
+                        textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 22.0,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        letterSpacing: 0.5,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black45,
+                            offset: Offset(1, 1),
+                            blurRadius: 3.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

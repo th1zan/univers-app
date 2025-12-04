@@ -11,13 +11,13 @@
             ]
         },
         {
-            "x": 900.0,
+            "x": 987.0,
             "y": 114.0,
             "w": 393.0,
             "h": 808.0,
-            "widget": "const SlidesShow()",
+            "widget": "const SlideshowPage()",
             "deps": [
-                "lib/pages/slides_show.dart"
+                "lib/pages/slideshow_page.dart"
             ]
         }
     ]

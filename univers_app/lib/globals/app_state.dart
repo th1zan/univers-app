@@ -24,6 +24,17 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  String _selectedLanguage = 'en';
+
+  String get selectedLanguage {
+    return _selectedLanguage;
+  }
+
+  void setLanguage(String language) {
+    _selectedLanguage = language;
+    notifyListeners();
+  }
+
   // Supabase client
   SupabaseClient get supabase => Supabase.instance.client;
 

@@ -3,11 +3,12 @@ import 'package:nowa_runtime/nowa_runtime.dart';
 @NowaGenerated()
 class UniversModel {
   @NowaGenerated({'loader': 'auto-constructor'})
-  const UniversModel({
+  UniversModel({
     this.id,
     this.name,
     this.coverImageUrl,
-    this.folder,
+    this.slug,
+    this.translations,
   });
 
   @NowaGenerated({'loader': 'auto-from-json'})
@@ -16,7 +17,8 @@ class UniversModel {
       id: json['id']?.toString(),
       name: json['name'],
       coverImageUrl: json['thumbnail_url'],
-      folder: json['folder'],
+      slug: json['slug'],
+      translations: json['translations'] as Map<String, String>?,
     );
   }
 
@@ -26,7 +28,9 @@ class UniversModel {
 
   final String? coverImageUrl;
 
-  final String? folder;
+  final String? slug;
+
+  Map<String, String>? translations;
 
   @NowaGenerated({'loader': 'auto-to-json'})
   Map<String, dynamic> toJson() {
@@ -34,7 +38,8 @@ class UniversModel {
       'id': id,
       'name': name,
       'thumbnail_url': coverImageUrl,
-      'folder': folder,
+      'slug': slug,
+      'translations': translations,
     };
   }
 }
