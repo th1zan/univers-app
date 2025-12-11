@@ -55,7 +55,7 @@ class _SlideshowPageState extends State<SlideshowPage> {
     'es': 'Paulina',
     'de': 'Anna',
     'it': 'Alice',
-    // Ajoute d'autres langues si besoin
+    // Le mécanisme dynamique détecte automatiquement les nouvelles langues
   };
 
   @override
@@ -144,101 +144,113 @@ class _SlideshowPageState extends State<SlideshowPage> {
             }
             return Stack(
               children: [
-                if (!isPlayingVideo)
-                  Column(
-                    children: [
-                      Expanded(
-                        child: IgnorePointer(
-                          ignoring: isPlayingVideo,
-                          child: PageView.builder(
-                            controller: pageController,
-                             onPageChanged: (index) {
-                               setState(() {
-                                 currentIndex = index;
-                               });
-                               _speakCurrentTitle(assets);
-                             },
-                            itemCount: assets.length,
-                            itemBuilder: (context, index) {
-                              final asset = assets[index];
-                              final encodedFolder = Uri.encodeComponent(slug);
-                              final encodedImage = Uri.encodeComponent(
-                                asset.imageUrl ?? '',
-                              );
-                              final imageUrl =
-                                  'https://nazvebulhqxnieyeqnxe.supabase.co/storage/v1/object/public/univers/$encodedFolder/$encodedImage';
-
-                              return GestureDetector(
-                                onTap: () {
-                                  final videoExtension = kIsWeb
-                                      ? '_silent.webm'
-                                      : '_silent.mp4';
-                                  final videoName =
-                                      asset.imageUrl?.replaceAll(
-                                        '.png',
-                                        videoExtension,
-                                      ) ??
-                                      '';
-                                  final encodedVideo = Uri.encodeComponent(
-                                    videoName,
-                                  );
-                                  String videoUrl =
-                                      asset.animationUrl ??
-                                      'https://nazvebulhqxnieyeqnxe.supabase.co/storage/v1/object/public/univers/${Uri.encodeComponent(slug)}/${encodedVideo}';
-
-                                  playVideo(videoUrl);
-                                },
-                                child: Center(
-                                  child: CachedNetworkImage(
-                                    imageUrl: imageUrl,
-                                    fit: kIsWeb ? BoxFit.contain : BoxFit.cover,
-                                    placeholder: (context, url) => const Center(
-                                      child: CircularProgressIndicator(),
+                // Layout principal : image OU vidéo (jamais superposés)
+                Column(
+                  children: [
+                    Expanded(
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: isPlayingVideo && chewieController != null
+                            ? GestureDetector(
+                                key: const ValueKey('video'),
+                                onTap: stopVideo,
+                                child: Container(
+                                  color: const Color(0xfff5e6d3), // Même fond que l'image
+                                  child: Center(
+                                    child: AspectRatio(
+                                      aspectRatio: videoPlayerController!.value.aspectRatio,
+                                      child: Chewie(controller: chewieController!),
                                     ),
-                                    errorWidget: (context, url, error) =>
-                                        const Icon(
-                                          Icons.broken_image,
-                                          size: 100.0,
-                                          color: Colors.grey,
-                                        ),
                                   ),
                                 ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 24.0,
-                            horizontal: 20.0,
-                         ),
-                          child: Text(
-                            assets[currentIndex].translations?[Provider.of<AppState>(context).selectedLanguage] ?? assets[currentIndex].title ?? '',
-                            style: const TextStyle(
-                              fontSize: 36.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                    ],
-                  ),
-                if (isPlayingVideo && chewieController != null)
-                  LayoutBuilder(
-                    builder: (context, constraints) => GestureDetector(
-                      onTap: stopVideo,
-                      child: Container(
-                        width: constraints.maxWidth,
-                        height: constraints.maxHeight,
-                        color: Colors.black,
-                        child: Center(
-                          child: Chewie(controller: chewieController!),
-                        ),
+                              )
+                            : PageView.builder(
+                                key: const ValueKey('pageview'),
+                                controller: pageController,
+                                onPageChanged: (index) {
+                                  setState(() {
+                                    currentIndex = index;
+                                  });
+                                  _speakCurrentTitle(assets);
+                                },
+                                itemCount: assets.length,
+                                itemBuilder: (context, index) {
+                                  final asset = assets[index];
+                                  final encodedFolder = Uri.encodeComponent(slug);
+                                  final encodedImage = Uri.encodeComponent(
+                                    asset.imageUrl ?? '',
+                                  );
+                                  final imageUrl =
+                                      'https://nazvebulhqxnieyeqnxe.supabase.co/storage/v1/object/public/univers/$encodedFolder/$encodedImage';
+
+                                  return GestureDetector(
+                                    onTap: () {
+                                      final videoExtension = kIsWeb
+                                          ? '_silent.webm'
+                                          : '_silent.mp4';
+                                      final videoName =
+                                          asset.imageUrl?.replaceAll(
+                                            '.png',
+                                            videoExtension,
+                                          ) ??
+                                          '';
+                                      final encodedVideo = Uri.encodeComponent(
+                                        videoName,
+                                      );
+                                      String videoUrl =
+                                          asset.animationUrl ??
+                                          'https://nazvebulhqxnieyeqnxe.supabase.co/storage/v1/object/public/univers/${Uri.encodeComponent(slug)}/${encodedVideo}';
+
+                                      playVideo(videoUrl);
+                                    },
+                                    child: Container(
+                                      color: const Color(0xfff5e6d3), // Fond uniforme
+                                      child: Center(
+                                        child: CachedNetworkImage(
+                                          imageUrl: imageUrl,
+                                          fit: kIsWeb ? BoxFit.contain : BoxFit.cover,
+                                          placeholder: (context, url) => const Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(
+                                                Icons.broken_image,
+                                                size: 100.0,
+                                                color: Colors.grey,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
                       ),
                     ),
-                  ),
+
+                    // Texte en bas (toujours visible, même couleur)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 24.0,
+                        horizontal: 20.0,
+                      ),
+                      decoration: const BoxDecoration(
+                        color: Color(0xfff5e6d3), // Fond uniforme
+                      ),
+                      child: Text(
+                        assets[currentIndex].translations?[Provider.of<AppState>(context).selectedLanguage] ??
+                        assets[currentIndex].title ?? '',
+                        style: const TextStyle(
+                          fontSize: 36.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87, // Toujours noir
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+
+                // Boutons superposés (inchangés)
                 Positioned(
                   top: 20.0,
                   left: 20.0,
@@ -256,29 +268,7 @@ class _SlideshowPageState extends State<SlideshowPage> {
                     holdDuration: const Duration(seconds: 2),
                   ),
                 ),
-                Positioned(
-                  top: 20.0,
-                  right: 20.0,
-                  child: HoldButton(
-                    iconBuilder: () => isMuted ? Icons.volume_off_rounded : Icons.volume_up_rounded,
-                    onHold: () {
-                      setState(() {
-                        isMuted = !isMuted;
-                        if (chewieController != null) {
-                          chewieController?.setVolume(isMuted ? 0.0 : 1.0);
-                        }
-                        audioPlayer?.setVolume(isMuted ? 0.0 : 1.0);
-                      });
-                    },
-                    gradientColors: const [
-                      Color(0xFF4ECDC4),
-                      Color(0xFF6FE3DA),
-                    ],
-                    size: 70.0,
-                    iconSize: 40.0,
-                    holdDuration: const Duration(seconds: 2),
-                  ),
-                ),
+
                 if (kIsWeb)
                   Positioned(
                     left: 20.0,
@@ -358,10 +348,16 @@ class _SlideshowPageState extends State<SlideshowPage> {
         showControls: false,
         allowFullScreen: false,
         allowMuting: true,
+        aspectRatio: videoPlayerController!.value.aspectRatio,
       );
+
+      // Petite pause pour transition fluide
+      await Future.delayed(const Duration(milliseconds: 100));
+
       setState(() {
         isPlayingVideo = true;
       });
+
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (chewieController != null && isMuted) {
           chewieController?.setVolume(0.0);

@@ -28,7 +28,7 @@ class _HoldButtonState extends State<HoldButton>
   late AnimationController _progressController;
   Timer? _holdTimer;
   bool _isHolding = false;
-  bool _showHint = true;
+
 
   @override
   void initState() {
@@ -42,20 +42,10 @@ class _HoldButtonState extends State<HoldButton>
       if (status == AnimationStatus.completed) {
         widget.onHold();
         _resetProgress();
-        setState(() {
-          _showHint = false; // Masquer le hint après la première utilisation
-        });
       }
     });
 
-    // Auto-masquer le hint après 3 secondes
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
-        setState(() {
-          _showHint = false;
-        });
-      }
-    });
+    
   }
 
   @override
@@ -156,47 +146,7 @@ class _HoldButtonState extends State<HoldButton>
           ),
         ),
 
-        // Indicateur "Hold" (hint)
-        if (_showHint)
-          Positioned(
-            bottom: -32.0,
-            left: 0,
-            right: 0,
-            child: AnimatedOpacity(
-              opacity: _showHint ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 300),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8.0,
-                  vertical: 4.0,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.black87,
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.touch_app,
-                      size: 14.0,
-                      color: gradientColors[0],
-                    ),
-                    const SizedBox(width: 4.0),
-                    const Text(
-                      'Maintenir',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 11.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+        
       ],
     );
   }

@@ -98,33 +98,7 @@ class _CardUniversState extends State<CardUnivers> with SingleTickerProviderStat
                   ),
                 ),
 
-                // Badge décoratif (coin haut droit)
-                Positioned(
-                  top: 12.0,
-                  right: 12.0,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12.0,
-                      vertical: 6.0,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFD93D),
-                      borderRadius: BorderRadius.circular(20.0),
-                      boxShadow: [
-                        BoxShadow(
-                           color: Colors.black.withValues(alpha: 0.2),
-                          blurRadius: 8.0,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.play_circle_filled,
-                      color: Colors.white,
-                      size: 20.0,
-                    ),
-                  ),
-                ),
+
 
                 // Titre avec fond gradient
                 Positioned(
