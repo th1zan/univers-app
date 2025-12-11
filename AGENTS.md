@@ -1,6 +1,6 @@
 # AGENTS.md – Projet "Univers" (Nowa + Flutter + Supabase)
 
-## Contexte général du projet (à ne jamais oublier
+## Contexte général du projet (à ne jamais oublier)
 - Application mobile Flutter pour enfants (3–8 ans)
 - Générée principalement avec **Nowa**[](https://docs.nowa.dev/)
 - Nom temporaire : **Univers**
