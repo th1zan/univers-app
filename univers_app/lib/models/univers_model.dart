@@ -1,8 +1,4 @@
-import 'package:nowa_runtime/nowa_runtime.dart';
-
-@NowaGenerated()
 class UniversModel {
-  @NowaGenerated({'loader': 'auto-constructor'})
   const UniversModel({
     this.id,
     this.name,
@@ -10,7 +6,6 @@ class UniversModel {
     this.folder,
   });
 
-  @NowaGenerated({'loader': 'auto-from-json'})
   factory UniversModel.fromJson(Map<String, dynamic> json) {
     return UniversModel(
       id: json['id']?.toString(),
@@ -28,7 +23,6 @@ class UniversModel {
 
   final String? folder;
 
-  @NowaGenerated({'loader': 'auto-to-json'})
   Map<String, dynamic> toJson() {
     return {
       'id': id,

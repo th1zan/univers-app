@@ -1,8 +1,4 @@
-import 'package:nowa_runtime/nowa_runtime.dart';
-
-@NowaGenerated()
 class UniversAssetModel {
-  @NowaGenerated({'loader': 'auto-constructor'})
   const UniversAssetModel({
     this.id,
     this.universId,
@@ -12,14 +8,13 @@ class UniversAssetModel {
     this.order,
   });
 
-  @NowaGenerated({'loader': 'auto-from-json'})
   factory UniversAssetModel.fromJson(Map<String, dynamic> json) {
     return UniversAssetModel(
       id: json['id'],
       universId: json['univers_folder'],
       title: json['display_name'],
       imageUrl: json['image_name'],
-      animationUrl: null,  // Not in table yet
+      animationUrl: null, // Not in table yet
       order: json['sort_order'],
     );
   }
@@ -36,7 +31,6 @@ class UniversAssetModel {
 
   final int? order;
 
-  @NowaGenerated({'loader': 'auto-to-json'})
   Map<String, dynamic> toJson() {
     return {
       'id': id,

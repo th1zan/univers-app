@@ -1,9 +1,7 @@
-import 'package:nowa_runtime/nowa_runtime.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:univers_app/models/univers_model.dart';
 import 'package:univers_app/models/univers_asset_model.dart';
 
-@NowaGenerated()
 class SupabaseService {
   SupabaseService._();
 

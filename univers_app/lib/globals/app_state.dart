@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:univers_app/globals/themes.dart';
-import 'package:nowa_runtime/nowa_runtime.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:univers_app/models/models.dart';
 
-@NowaGenerated()
 class AppState extends ChangeNotifier {
   AppState();
 
@@ -37,10 +35,7 @@ class AppState extends ChangeNotifier {
 
   // Fetch universes
   Future<List<Universe>> fetchUniverses() async {
-    final response = await supabase
-        .from('universes')
-        .select()
-        .order('order');
+    final response = await supabase.from('universes').select().order('order');
     return response.map((json) => Universe.fromJson(json)).toList();
   }
 

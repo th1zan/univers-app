@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nowa_runtime/nowa_runtime.dart';
 import 'package:univers_app/pages/slideshow_page.dart';
 import 'package:univers_app/models/univers_model.dart';
 
-@NowaGenerated()
 class CardUnivers extends StatefulWidget {
-  @NowaGenerated({'loader': 'auto-constructor'})
   const CardUnivers({super.key, required this.univers});
 
   final UniversModel univers;
@@ -16,7 +13,6 @@ class CardUnivers extends StatefulWidget {
   }
 }
 
-@NowaGenerated()
 class _CardUniversState extends State<CardUnivers> {
   @override
   Widget build(BuildContext context) {
