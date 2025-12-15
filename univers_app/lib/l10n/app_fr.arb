@@ -1,0 +1,64 @@
+{
+  "@@locale": "fr",
+  "@@last_modified": "2025-12-13T00:00:00.000Z",
+  
+  "settingsTitle": "Paramètres",
+  "@settingsTitle": {
+    "description": "Titre de la page des paramètres"
+  },
+  
+  "soundSection": "Son",
+  "@soundSection": {
+    "description": "Titre de la section son"
+  },
+  
+  "backgroundMusic": "Musique de fond",
+  "@backgroundMusic": {
+    "description": "Option musique de fond"
+  },
+  
+  "textToSpeech": "Lecture vocale",
+  "@textToSpeech": {
+    "description": "Option synthèse vocale"
+  },
+  
+  "languageSection": "Langue",
+  "@languageSection": {
+    "description": "Titre de la section langue"
+  },
+  
+  "guidedAccessSection": "Verrouillage guidé",
+  "@guidedAccessSection": {
+    "description": "Titre de la section verrouillage parental"
+  },
+  
+  "loading": "Chargement...",
+  "@loading": {
+    "description": "Message de chargement"
+  },
+  
+  "errorOccurred": "Oups ! Une erreur est survenue",
+  "@errorOccurred": {
+    "description": "Message d'erreur générique"
+  },
+  
+  "noImagesAvailable": "Aucune image disponible",
+  "@noImagesAvailable": {
+    "description": "Message quand aucune image n'est disponible"
+  },
+  
+  "untitled": "Sans titre",
+  "@untitled": {
+    "description": "Texte par défaut pour un élément sans titre"
+  },
+  
+  "iosLockInstructions": "**Verrouiller l'écran pour les enfants (iPhone)**\n\n1. Réglages → Accessibilité\n2. Accès guidé (en bas, section Apprentissage)\n3. Activer Accès guidé\n4. Définir un code (Réglages du code)\n5. (Conseillé) Raccourci d'accessibilité → cocher Accès guidé\n\nPour bloquer dans le jeu :\n• Lancer le jeu\n• Appuyer 3 fois rapidement sur le bouton latéral\n• Toucher Démarrer\n\nPour quitter : triple-clic → code → Fin",
+  "@iosLockInstructions": {
+    "description": "Instructions pour activer le verrouillage guidé sur iOS"
+  },
+  
+  "androidLockInstructions": "**Verrouiller l'écran pour les enfants (Android)**\n\n1. Paramètres → Sécurité et confidentialité → Plus de sécurité → Épinglage d'application\n   (ou chercher « Épingler »)\n2. Activer et cocher « Demander le code avant de détacher »\n\nPour bloquer dans le jeu :\n• Ouvrir le jeu\n• Appuyer sur le bouton carré (ou glisser pour les apps récentes)\n• Toucher l'icône du jeu en haut → Épingler\n\nPour quitter : maintenir Aperçu + Power → saisir le code",
+  "@androidLockInstructions": {
+    "description": "Instructions pour activer le verrouillage guidé sur Android"
+  }
+}

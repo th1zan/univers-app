@@ -1,0 +1,18 @@
+{
+  "@@locale": "es",
+  
+  "settingsTitle": "Configuración",
+  "soundSection": "Sonido",
+  "backgroundMusic": "Música de fondo",
+  "textToSpeech": "Lectura de voz",
+  "languageSection": "Idioma",
+  "guidedAccessSection": "Acceso guiado",
+  "loading": "Cargando...",
+  "errorOccurred": "¡Ups! Se produjo un error",
+  "noImagesAvailable": "No hay imágenes disponibles",
+  "untitled": "Sin título",
+  
+  "iosLockInstructions": "**Bloquear pantalla para niños (iPhone)**\n\n1. Ajustes → Accesibilidad\n2. Acceso guiado (Aprendizaje)\n3. Activar Acceso guiado\n4. Establecer código\n5. (Recomendado) Funciones rápidas → marcar Acceso guiado\n\nBloquear en el juego:\n• Abrir el juego\n• Pulsar 3 veces rápido el botón lateral\n• Tocar Empezar\n\nSalir: triple pulsación → código → Finalizar",
+  
+  "androidLockInstructions": "**Bloquear pantalla para niños (Android)**\n\n1. Ajustes → Seguridad y privacidad → Más seguridad → Fijar app\n   (o buscar «Fijar»)\n2. Activar y marcar «Pedir PIN antes de desanclar»\n\nBloquear en el juego:\n• Abrir el juego\n• Botón apps recientes (cuadrado)\n• Tocar icono arriba → Fijar\n\nSalir: mantener Vista general + Encendido → introducir PIN"
+}

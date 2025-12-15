@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:univers_app/globals/app_state.dart';
+import 'package:univers_app/core/app_state.dart';
 import 'package:univers_app/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 

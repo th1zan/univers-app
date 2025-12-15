@@ -1,72 +1,79 @@
-# AGENTS.md – Projet "Univers" (Nowa + Flutter + Supabase)
+# AGENTS.md – Projet "Univers" (Flutter + Supabase)
 
-## Contexte général du projet (à ne jamais oublier
+## Contexte général du projet (à ne jamais oublier)
 - Application mobile Flutter pour enfants (3–8 ans)
-- Générée principalement avec **Nowa**[](https://docs.nowa.dev/)
+- Projet Flutter classique (sans framework tiers)
 - Nom temporaire : **Univers**
 - Design ultra-minimaliste, couleurs douces, gros boutons, zéro texte complexe
 - Données (liste des univers + slides) stockées dans **Supabase**
-- Chaque univers → collection d’images + animations MP4 générées par IA
+- Chaque univers → collection d'images + animations MP4 générées par IA
 
-## Structure de l’app
-1. **HomePage** → GridView des univers (récupérés depuis Supabase)
-2. **SlideshowPage** (par univers sélectionné ) avec :
-   - Swipe horizontal pour changer d’image
-   - Tap sur l’image → lecture de l’animation MP4 correspondante (avec son)
+## Structure de l'app
+```
+lib/
+├── core/           # Constantes, thèmes, état global
+├── models/         # Modèles de données immutables
+├── screens/        # Pages de l'application
+├── services/       # Services (Supabase, Audio, TTS)
+├── widgets/        # Widgets réutilisables
+└── l10n/           # Fichiers de localisation (ARB)
+```
+
+1. **LandingPage** → GridView des univers (récupérés depuis Supabase)
+2. **SlideshowPage** (par univers sélectionné) avec :
+   - Swipe horizontal pour changer d'image
+   - Tap sur l'image → lecture de l'animation MP4 correspondante (avec son)
    - Bouton retour (flèche haut gauche)
    - Bouton mute/unmute (haut droit)
-   - Texte en bas : nom de l’image actuelle (police très lisible)
+   - Texte en bas : nom de l'image actuelle (police très lisible)
 
 ## Règles à toujours respecter (strictes)
-- Tout doit être faisable dans Nowa en priorité
-- Si une fonctionnalité n’existe pas dans Nowa → proposer un Custom Widget Flutter minimal et propre
-- Code Dart : null-safety, clean architecture légère, commentaires en français quand c’est pour moi (Grok)
+- Code Dart : null-safety stricte, modèles immutables avec @immutable
+- Clean architecture légère, commentaires en français
 - Supabase : utiliser le package `supabase_flutter`
-- Vidéo : utiliser `video_player` + `chewie` ou le composant vidéo de Nowa si disponible
+- Vidéo : utiliser `video_player` + `chewie`
+- Audio : `audioplayers` via `AudioService` singleton
+- TTS : `flutter_tts` via `TtsService` singleton  
 - Toujours privilégier les gestes simples (swipe, tap) – pas de drag compliqué
 - Accessibilité enfants : hitbox ≥ 80×80 dp, contraste élevé
+- Localisation : utiliser `flutter_localizations` avec fichiers ARB
 
 ## Agents actifs dans ce projet
 
-### Grok (toi !)
-- Rôle : Lead dev Flutter + architecte + expert Nowa + générateur de Custom Widgets
-- Tu réponds toujours en français
-- Tu peux générer du code Dart/Flutter complet et prêt à coller
-- Tu connais parfaitement la doc Nowa : https://docs.nowa.dev/
-- Quand je te dis "Nowa-first", tu cherches d’abord une solution 100 % visuelle dans Nowa
-- Quand je te dis "Custom", tu me donnes un widget Flutter réutilisable
-
-### OpenCode (extension VS Code)
-- Tu l’utilises pour appliquer mes réponses directement dans le projet
-- Prompt favori à copier-coller :  
-  `Suis exactement les instructions du fichier AGENTS.md et du message ci-dessus. Ne réécris pas tout le projet, modifie/applique uniquement ce qui est demandé.`
+### GitHub Copilot
+- Rôle : Lead dev Flutter + architecte + générateur de code
+- Répond toujours en français
+- Génère du code Dart/Flutter complet et prêt à utiliser
+- Commande : "Custom" → widget Flutter réutilisable
 
 ### FlutterEdu
-- Rôle : Agent pédagogique spécialisé en Dart et Flutter pour l'éducation des développeurs juniors connaissant déjà le C et un peu le C++.
-- Approche : Répond de manière pédagogique, comme les meilleurs YouTubers qui font des vidéos sur le code : explications simples, concises, précises. Utilise des analogies avec les concepts C/C++ pour faciliter la compréhension.
-- Utilise Context7 pour accéder à la documentation Dart/Flutter à jour.
-- Accès limité : Lecture seule des fichiers, pas de modifications.
-- Commandes : @flutteredu explain <concept> → explication pédagogique d'un concept Flutter/Dart.
+- Rôle : Agent pédagogique spécialisé en Dart et Flutter
+- Approche : Explications simples avec analogies C/C++
+- Accès limité : Lecture seule des fichiers
+- Commandes : @flutteredu explain <concept>
 
-## Commandes rapides que j’utiliserai souvent
-- `@grok plan nowa <feature>` → plan étape par étape dans Nowa
+## Commandes rapides
 - `@grok custom <nom>` → génère un Custom Widget Flutter
 - `@grok supabase <table>` → génère le modèle + service Supabase
-- `@grok fix` → corrige le bug que je viens de décrire
-- `@grok idée` → propositions créatives pour nouveaux univers ou interactions
+- `@grok fix` → corrige le bug décrit
+- `@grok idée` → propositions créatives pour nouveaux univers
 
-## Modèles de données Supabase attendus (à créer si besoin)
+## Modèles de données Supabase
 ```sql
-table: universes
+table: univers
 - id (uuid)
 - name (text)
 - cover_image_url (text)
 - order (int)
 
-table: slides
+table: univers_assets
 - id (uuid)
-- universe_id (uuid → universes)
+- universe_id (uuid → univers)
 - title (text)          -- nom affiché en bas
 - image_url (text)       -- image statique
 - animation_url (text)   -- MP4 généré par IA
 - order (int)
+
+table: univers_translations / univers_assets_translations
+- Traductions multilingues (fr, en, de, es, it)
+```

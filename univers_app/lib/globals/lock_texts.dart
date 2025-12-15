@@ -1,49 +1,96 @@
-final Map<String, String> menuTitleTexts = {
-  'fr': 'Menu',
-  'en': 'Menu',
-  'de': 'Menü',
-  'es': 'Menú',
-  'it': 'Menu',
+/// Textes localisés pour le menu et les paramètres.
+/// Contient toutes les traductions de l'interface utilisateur.
+library;
+
+// Titres des sections du menu
+const Map<String, String> menuTitleTexts = {
+  'fr': 'Paramètres',
+  'en': 'Settings',
+  'es': 'Configuración',
+  'de': 'Einstellungen',
+  'it': 'Impostazioni',
+  'pt': 'Configurações',
+  'nl': 'Instellingen',
+  'pl': 'Ustawienia',
+  'ru': 'Настройки',
+  'zh': '设置',
+  'ja': '設定',
+  'ar': 'الإعدادات',
 };
 
-final Map<String, String> soundSectionTexts = {
+const Map<String, String> soundSectionTexts = {
   'fr': 'Son',
   'en': 'Sound',
-  'de': 'Ton',
   'es': 'Sonido',
+  'de': 'Ton',
   'it': 'Suono',
+  'pt': 'Som',
+  'nl': 'Geluid',
+  'pl': 'Dźwięk',
+  'ru': 'Звук',
+  'zh': '声音',
+  'ja': 'サウンド',
+  'ar': 'الصوت',
 };
 
-final Map<String, String> backgroundMusicTexts = {
+const Map<String, String> backgroundMusicTexts = {
   'fr': 'Musique de fond',
   'en': 'Background Music',
-  'de': 'Hintergrundmusik',
   'es': 'Música de fondo',
+  'de': 'Hintergrundmusik',
   'it': 'Musica di sottofondo',
+  'pt': 'Música de fundo',
+  'nl': 'Achtergrondmuziek',
+  'pl': 'Muzyka w tle',
+  'ru': 'Фоновая музыка',
+  'zh': '背景音乐',
+  'ja': 'バックグラウンドミュージック',
+  'ar': 'موسيقى الخلفية',
 };
 
-final Map<String, String> textToSpeechTexts = {
-  'fr': 'Synthèse vocale',
+const Map<String, String> textToSpeechTexts = {
+  'fr': 'Lecture vocale',
   'en': 'Text to Speech',
-  'de': 'Text-to-Speech',
-  'es': 'Texto a voz',
-  'it': 'Testo a voce',
+  'es': 'Lectura de voz',
+  'de': 'Sprachausgabe',
+  'it': 'Lettura vocale',
+  'pt': 'Leitura de voz',
+  'nl': 'Spraak',
+  'pl': 'Czytanie głosowe',
+  'ru': 'Озвучивание текста',
+  'zh': '语音朗读',
+  'ja': '音声読み上げ',
+  'ar': 'القراءة الصوتية',
 };
 
-final Map<String, String> languageSectionTexts = {
+const Map<String, String> languageSectionTexts = {
   'fr': 'Langue',
   'en': 'Language',
-  'de': 'Sprache',
   'es': 'Idioma',
+  'de': 'Sprache',
   'it': 'Lingua',
+  'pt': 'Idioma',
+  'nl': 'Taal',
+  'pl': 'Język',
+  'ru': 'Язык',
+  'zh': '语言',
+  'ja': '言語',
+  'ar': 'اللغة',
 };
 
-final Map<String, String> lockSectionTexts = {
-  'fr': 'Verrouillage',
-  'en': 'Lock',
-  'de': 'Sperre',
-  'es': 'Bloqueo',
-  'it': 'Blocco',
+const Map<String, String> lockSectionTexts = {
+  'fr': 'Verrouillage guidé',
+  'en': 'Guided Access',
+  'es': 'Acceso guiado',
+  'de': 'Geführter Zugriff',
+  'it': 'Accesso guidato',
+  'pt': 'Acesso guiado',
+  'nl': 'Toegang met begeleiding',
+  'pl': 'Dostęp z przewodnikiem',
+  'ru': 'Гид-доступ',
+  'zh': '引导式访问',
+  'ja': 'アクセスガイド',
+  'ar': 'الوصول الموجه',
 };
 
 final Map<String, String> iosLockTexts = {
@@ -63,7 +110,6 @@ Pour bloquer dans le jeu :
 
 Pour quitter : triple-clic → code → Fin
 ''',
-
   'en': '''
 **Lock screen for kids (iPhone)**
 
@@ -80,7 +126,6 @@ To lock in the game:
 
 To exit: triple-click → enter code → End
 ''',
-
   'de': '''
 **Bildschirm für Kinder sperren (iPhone)**
 
@@ -97,7 +142,6 @@ Spiel sperren:
 
 Beenden: 3× Seitentaste → Code → Ende
 ''',
-
   'es': '''
 **Bloquear pantalla para niños (iPhone)**
 
@@ -114,7 +158,6 @@ Bloquear en el juego:
 
 Salir: triple pulsación → código → Finalizar
 ''',
-
   'it': '''
 **Bloccare schermo per bambini (iPhone)**
 
@@ -148,7 +191,6 @@ Pour bloquer dans le jeu :
 
 Pour quitter : maintenir Aperçu + Power → saisir le code
 ''',
-
   'en': '''
 **Lock screen for kids (Android)**
 
@@ -163,7 +205,6 @@ To lock in the game:
 
 To exit: hold Overview + Power → enter PIN
 ''',
-
   'de': '''
 **Bildschirm für Kinder sperren (Android)**
 
@@ -178,7 +219,6 @@ Spiel sperren:
 
 Beenden: Übersicht + Power gedrückt halten → PIN eingeben
 ''',
-
   'es': '''
 **Bloquear pantalla para niños (Android)**
 
@@ -193,7 +233,6 @@ Bloquear en el juego:
 
 Salir: mantener Vista general + Encendido → introducir PIN
 ''',
-
   'it': '''
 **Bloccare schermo per bambini (Android)**
 

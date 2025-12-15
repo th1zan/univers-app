@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 
 class HoldButton extends StatefulWidget {
   const HoldButton({
@@ -26,9 +25,7 @@ class HoldButton extends StatefulWidget {
 class _HoldButtonState extends State<HoldButton>
     with SingleTickerProviderStateMixin {
   late AnimationController _progressController;
-  Timer? _holdTimer;
   bool _isHolding = false;
-
 
   @override
   void initState() {
@@ -44,14 +41,11 @@ class _HoldButtonState extends State<HoldButton>
         _resetProgress();
       }
     });
-
-    
   }
 
   @override
   void dispose() {
     _progressController.dispose();
-    _holdTimer?.cancel();
     super.dispose();
   }
 
@@ -108,7 +102,7 @@ class _HoldButtonState extends State<HoldButton>
                         child: CircularProgressIndicator(
                           value: _progressController.value,
                           strokeWidth: 4.0,
-                           backgroundColor: Colors.white.withValues(alpha: 0.3),
+                          backgroundColor: Colors.white.withValues(alpha: 0.3),
                           valueColor: AlwaysStoppedAnimation<Color>(
                             gradientColors[0],
                           ),
@@ -128,7 +122,7 @@ class _HoldButtonState extends State<HoldButton>
                       ),
                       boxShadow: [
                         BoxShadow(
-                           color: gradientColors[0].withValues(alpha: 0.5),
+                          color: gradientColors[0].withValues(alpha: 0.5),
                           blurRadius: 16.0,
                           offset: const Offset(0, 6),
                         ),
@@ -145,8 +139,6 @@ class _HoldButtonState extends State<HoldButton>
             ),
           ),
         ),
-
-        
       ],
     );
   }

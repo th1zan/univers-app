@@ -1,0 +1,18 @@
+{
+  "@@locale": "it",
+  
+  "settingsTitle": "Impostazioni",
+  "soundSection": "Suono",
+  "backgroundMusic": "Musica di sottofondo",
+  "textToSpeech": "Lettura vocale",
+  "languageSection": "Lingua",
+  "guidedAccessSection": "Accesso guidato",
+  "loading": "Caricamento...",
+  "errorOccurred": "Ops! Si è verificato un errore",
+  "noImagesAvailable": "Nessuna immagine disponibile",
+  "untitled": "Senza titolo",
+  
+  "iosLockInstructions": "**Bloccare schermo per bambini (iPhone)**\n\n1. Impostazioni → Accessibilità\n2. Accesso guidato (Apprendimento)\n3. Attivare Accesso guidato\n4. Impostare codice\n5. (Consigliato) Scorciatoia → selezionare Accesso guidato\n\nBloccare nel gioco:\n• Apri il gioco\n• Premi 3 volte rapido il tasto laterale\n• Tocca Inizia\n\nUscire: triplo clic → codice → Fine",
+  
+  "androidLockInstructions": "**Bloccare schermo per bambini (Android)**\n\n1. Impostazioni → Sicurezza e privacy → Altre impostazioni → Fissaggio app\n   (o cercare «Fissa»)\n2. Attivare + spuntare «Chiedi PIN prima di sganciare»\n\nBloccare nel gioco:\n• Apri il gioco\n• Tasto app recenti (quadrato)\n• Tocca icona in alto → Fissa\n\nUscire: tenere premuto Panoramica + Accensione → inserire PIN"
+}

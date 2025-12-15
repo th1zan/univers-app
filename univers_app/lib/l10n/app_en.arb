@@ -1,0 +1,18 @@
+{
+  "@@locale": "en",
+  
+  "settingsTitle": "Settings",
+  "soundSection": "Sound",
+  "backgroundMusic": "Background Music",
+  "textToSpeech": "Text to Speech",
+  "languageSection": "Language",
+  "guidedAccessSection": "Guided Access",
+  "loading": "Loading...",
+  "errorOccurred": "Oops! An error occurred",
+  "noImagesAvailable": "No images available",
+  "untitled": "Untitled",
+  
+  "iosLockInstructions": "**Lock screen for kids (iPhone)**\n\n1. Settings → Accessibility\n2. Guided Access (Learning section)\n3. Turn on Guided Access\n4. Set a passcode (Passcode Settings)\n5. (Recommended) Accessibility Shortcut → check Guided Access\n\nTo lock in the game:\n• Open the game\n• Triple-click the side button\n• Tap Start\n\nTo exit: triple-click → enter code → End",
+  
+  "androidLockInstructions": "**Lock screen for kids (Android)**\n\n1. Settings → Security & privacy → More security → App pinning\n   (or search \"Pin\")\n2. Turn on and enable \"Ask for PIN before unpinning\"\n\nTo lock in the game:\n• Open the game\n• Tap recent apps button (square or swipe)\n• Tap game icon at top → Pin\n\nTo exit: hold Overview + Power → enter PIN"
+}

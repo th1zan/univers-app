@@ -1,5 +1,5 @@
 name: univers_app
-description: A new Nowa project.
+description: Application mobile éducative pour enfants - Exploration d'univers visuels avec animations.
 publish_to: none
 version: 1.0.0+1
 environment:
@@ -7,11 +7,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  nowa_runtime: ^0.1.2
+  flutter_localizations:
+    sdk: flutter
+  intl: any
   flutter_html: ^3.0.0
   flutter_svg: ^2.2.0
   provider: ^6.1.5
-  shared_preferences: ^2.5.3
   dio: ^5.5.0+1
   collection: ^1.19.1
   supabase_flutter: ^2.5.3
@@ -27,3 +28,4 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 flutter:
   uses-material-design: true
+  generate: true

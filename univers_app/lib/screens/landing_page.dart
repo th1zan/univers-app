@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:nowa_runtime/nowa_runtime.dart';
 import 'package:univers_app/models/univers_model.dart';
-import 'package:univers_app/integrations/supabase_service.dart';
-import 'package:univers_app/card_univers.dart';
-import 'package:univers_app/pages/menu_page.dart';
+import 'package:univers_app/services/supabase_service.dart';
+import 'package:univers_app/widgets/card_univers.dart';
+import 'package:univers_app/screens/menu_page.dart';
 import 'package:provider/provider.dart';
-import 'package:univers_app/globals/app_state.dart';
+import 'package:univers_app/core/app_state.dart';
 
-@NowaGenerated({'auto-width': 403.0})
 class LandingPage extends StatefulWidget {
-  @NowaGenerated({'loader': 'auto-constructor'})
   const LandingPage({super.key});
 
   @override
@@ -18,10 +15,7 @@ class LandingPage extends StatefulWidget {
   }
 }
 
-@NowaGenerated()
 class _LandingPageState extends State<LandingPage> {
-  String? var1 = '';
-
   Widget _buildHeader() {
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -45,57 +39,64 @@ class _LandingPageState extends State<LandingPage> {
           ],
         ),
         child: Text(
-              'Univers',
-              style: TextStyle(
-                fontSize: 42.0,
-                fontWeight: FontWeight.w900,
-                color: Theme.of(context).colorScheme.primary,
-                letterSpacing: 1.0,
-                shadows: [
-                  const Shadow(
-                    color: Colors.black12,
-                    offset: Offset(2.0, 2.0),
-                    blurRadius: 4.0,
-                  ),
-                ],
+          'Univers',
+          style: TextStyle(
+            fontSize: 42.0,
+            fontWeight: FontWeight.w900,
+            color: Theme.of(context).colorScheme.primary,
+            letterSpacing: 1.0,
+            shadows: [
+              const Shadow(
+                color: Colors.black12,
+                offset: Offset(2.0, 2.0),
+                blurRadius: 4.0,
               ),
-              textAlign: TextAlign.center,
-            ),
+            ],
+          ),
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }
 
   Widget _buildUniversGrid() {
     return Expanded(
-      child: DataBuilder<List<UniversModel>>(
-                  builder: (context, data) {
-                    // Collect supported languages from univers data (post-frame to avoid setState during build)
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      final appState = Provider.of<AppState>(context, listen: false);
-                      appState.collectSupportedLanguages(data, []);
-                    });
-                    return Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: GridView.custom(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 24.0,
-                          crossAxisSpacing: 24.0,
-                          childAspectRatio: 0.9,
-                        ),
-                        childrenDelegate: SliverChildBuilderDelegate(
-                          childCount: data.length,
-                          (context, index) => CardUnivers(univers: data[index]),
-                        ),
-                      ),
-                    );
-                  },
-        loadingWidget: _buildLoading(),
-        errorBuilder: (context, error) => _buildError(),
-         future: SupabaseService().getAllUnivers(),
-       ),
-     );
+      child: FutureBuilder<List<UniversModel>>(
+        future: SupabaseService().getAllUnivers(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return _buildLoading();
+          }
+
+          if (snapshot.hasError) {
+            return _buildError();
+          }
+
+          final data = snapshot.data ?? [];
+
+          // Collect supported languages from univers data (post-frame to avoid setState during build)
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            final appState = Provider.of<AppState>(context, listen: false);
+            appState.collectSupportedLanguages(data, []);
+          });
+          return Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: GridView.custom(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 24.0,
+                crossAxisSpacing: 24.0,
+                childAspectRatio: 0.9,
+              ),
+              childrenDelegate: SliverChildBuilderDelegate(
+                childCount: data.length,
+                (context, index) => CardUnivers(univers: data[index]),
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 
   Widget _buildLoading() {
@@ -189,50 +190,50 @@ class _LandingPageState extends State<LandingPage> {
         ),
       ),
     );
-   }
+  }
 
-   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-       body: Container(
-         decoration: BoxDecoration(
-           gradient: LinearGradient(
-             begin: Alignment.topLeft,
-             end: Alignment.bottomRight,
-             colors: [
-               Color(0xfffff8e7),
-               Color(0xffffe5ec),
-               Color(0xffe0f7fa),
-             ],
-           ),
-         ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xfffff8e7),
+              Color(0xffffe5ec),
+              Color(0xffe0f7fa),
+            ],
+          ),
+        ),
         child: SafeArea(
           child: Stack(
             children: [
               Column(
                 children: [
-              _buildHeader(),
-              _buildUniversGrid(),
-              ],
-            ),
-                Positioned(
-                  bottom: 20.0,
-                  right: 20.0,
-                  child: FloatingActionButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const MenuPage()),
-                      );
-                    },
-                    backgroundColor: const Color(0xffffd93d),
-                    child: const Icon(
-                      Icons.settings,
-                      color: Colors.white,
-                      size: 28.0,
-                    ),
+                  _buildHeader(),
+                  _buildUniversGrid(),
+                ],
+              ),
+              Positioned(
+                bottom: 20.0,
+                right: 20.0,
+                child: FloatingActionButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const MenuPage()),
+                    );
+                  },
+                  backgroundColor: const Color(0xffffd93d),
+                  child: const Icon(
+                    Icons.settings,
+                    color: Colors.white,
+                    size: 28.0,
                   ),
                 ),
+              ),
             ],
           ),
         ),
